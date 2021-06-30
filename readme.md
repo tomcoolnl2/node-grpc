@@ -1,5 +1,10 @@
+# learning the gRPC concept for NNodeJS MicroServices
 
-# TODO
+Run ```node /server``` to run a Unary service
+Run ```node /client/client``` to start a Unary service
+Watch the log to see a name printed out.
+
+## TODO
 
 - migrate to typescript
 - rebuild one ms with nestjs

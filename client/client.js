@@ -1,25 +1,25 @@
 
 const grpc = require('grpc')
-const { Greeting, GreetRequest } = require('../server/protos/greet_pb')
-const { GreetServiceClient } = require('../server/protos/greet_grpc_pb')
+const { Calculator, CalculateRequest } = require('../server/protos/calculate_pb')
+const { CalculateServiceClient } = require('../server/protos/calculate_grpc_pb')
 
 
 function main() {
     
-    const client = new GreetServiceClient(
+    const client = new CalculateServiceClient(
         'localhost:50051',
         grpc.credentials.createInsecure()
     )
 
-    const request = new GreetRequest()
+    const request = new CalculateRequest()
 
-    const greeting = new Greeting()
-    greeting.setFirstName('Tom')
-    greeting.setLastName('Cool')
+    const calculation = new Calculator()
+    calculation.setA(5)
+    calculation.setB(2)
     
-    request.setGreeting(greeting)
+    request.setCalculation(calculation)
     
-    client.greet(request, (error, response) => {
+    client.calculate(request, (error, response) => {
 
         if (!error) {
             console.log('response', response.getResult())

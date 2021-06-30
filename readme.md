@@ -21,6 +21,8 @@ grpc_tools_node_protoc ./protos/dummy.proto --js_out=import_style=commonjs,binar
 
 grpc_tools_node_protoc ./protos/greet.proto --js_out=import_style=commonjs,binary:./server --grpc_out=./server --plugin=`which grpc_tools_node_protoc_plugin`
 
+grpc_tools_node_protoc ./protos/calculate.proto --js_out=import_style=commonjs,binary:./server --grpc_out=./server --plugin=`which grpc_tools_node_protoc_plugin`
+
 protoc -I=. ./protos/dummy.proto 
   --js_out=import_style=commonjs,binary:./server 
   --grpc_out=./server 

@@ -3,8 +3,11 @@ syntax = "proto3";
 package greet;
 
 
-service GreetService { // Unary API
+service GreetService {
+    // Unary API
     rpc Greet (GreetRequest) returns (GreetResponse) {}
+    // Server Streaming API
+    rpc GreetManyTimes (GreetManyTimesRequest) returns (stream GreetManyTimesResponse) {}
 }
 
 message Greeting {
@@ -17,5 +20,13 @@ message GreetRequest {
 }
 
 message GreetResponse {
+    string result = 1;
+}
+
+message GreetManyTimesRequest {
+    Greeting greeting = 1;
+}
+
+message GreetManyTimesResponse {
     string result = 1;
 }

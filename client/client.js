@@ -1,37 +1,19 @@
 
-const path = require('path')
-const protoLoader = require('@grpc/proto-loader')
-const { loadPackageDefinition, credentials } = require('grpc')
+const { credentials } = require('grpc')
+const { GreetService } = require('../server/definitionLoader')
+
+const client = new GreetService('localhost:50051', credentials.createInsecure())
 
 
-const protoPath = path.join(__dirname, '..', 'protos', 'calculate.proto')
-const protoDefinition = protoLoader.loadSync(protoPath, {
-    keepCase: true,
-    longs: String,
-    enums: String,
-    defaults: true,
-    oneofs: true
-})
-
-const { CalculateService } = loadPackageDefinition(protoDefinition).calculate
-
-const client = new CalculateService(
-    'localhost:50051',
-    credentials.createInsecure()
-)
-
-function main() {
-    
-
-
+function callGreeting() {
     const request = {
-        calculation: {
-            a: 1,
-            b: 6
+        greeting: {
+            first_name: 'Tom',
+            last_name: 'Cool'
         }
     }
     
-    client.calculate(request, (error, response) => {
+    client.greet(request, (error, response) => {
 
         if (!error) {
             console.log('response', response.result)
@@ -40,6 +22,39 @@ function main() {
             console.error(error)
         }
     })
+}
+
+function callGreetManyTimes() {
+    
+    const request = {
+        greeting: {
+            first_name: 'Jinglan',
+            last_name: 'Cool'
+        }
+    }
+
+    const call = client.greetManyTimes(request)
+
+    call.on('data', response => {
+        console.log('response', response.result)
+    })
+
+    call.on('status', status => {
+        console.log(status)
+    })
+
+    call.on('error', status => {
+        console.log(status)
+    })
+
+    call.on('end', () => {
+        console.log('streaming ended')
+    })
+}
+
+function main() {
+    // callGreeting()
+    callGreetManyTimes()
 }
 
 main()

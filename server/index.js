@@ -2,6 +2,7 @@
 const { Server, ServerCredentials } = require('grpc')
 const { GreetService, CalculatorService } = require('../server/definitionLoader')
 const { primeFactorization } = require('./primeFactorization')
+const { sleep } = require('./sleep')
 
 
 function greet(
@@ -28,24 +29,15 @@ function greetManyTimes(call) {
     }, 1000)
 }
 
-function calculate(call) {
+async function calculate(call) {
     
     const { request: { calculation: { input } } } = call
-    const primeNumbers = primeFactorization(input)
+    await primeFactorization(input, async factor => {
+        call.write({ result: factor })
+        await sleep()
+    })
 
-    let count = 0
-    let intervalId = setInterval(() => {
-    
-        call.write({ result: primeNumbers[count] })
-        
-        if (++count >= primeNumbers.length) {
-            clearInterval(intervalId)
-            call.end()
-        }
-
-    }, 500)
-    
-    call.write({ result: input })
+    call.end()
 }
 
 function main() {

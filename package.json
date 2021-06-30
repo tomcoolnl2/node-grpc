@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@grpc/proto-loader": "^0.6.4",
     "google-protobuf": "^3.17.3",
     "grpc": "^1.24.10"
   },
@@ -10,7 +11,7 @@
   },
   "scripts": {
     "start:server": "nodemon ./server/",
-    "start:client": "nodemon ./client/client",
+    "start": "node ./client/client",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

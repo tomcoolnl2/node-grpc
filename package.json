@@ -9,10 +9,15 @@
     "node": ">=13.2.0"
   },
   "scripts": {
+    "start:server": "nodemon ./server/",
+    "start:client": "nodemon ./client/client",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "nodemon": "^2.0.8"
+  }
 }

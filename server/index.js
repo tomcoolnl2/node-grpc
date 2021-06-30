@@ -1,24 +1,24 @@
 
-const grpc = require('grpc')
-const greets = require('../server/protos/greet_pb')
-const service = require('../server/protos/greet_grpc_pb')
+const { Server, ServerCredentials } = require('grpc')
+const { GreetResponse } = require('../server/protos/greet_pb')
+const { GreetServiceService } = require('../server/protos/greet_grpc_pb')
 
 
-function  greet(call, callback) {
-    let greeting = new greets.GreetResponse()
-    console.log(call.request.getGreeting())
-    greeting.setResult('Hello', call.request.getGreeting().getFirstName())
-    callback(null, greeting)
+function  greet({ request }, callback) {
+    const response = new GreetResponse()
+    const greeting = request.getGreeting()
+    response.setResult('Hello: ' + greeting.getFirstName() + greeting.getLastName())
+    callback(null, response)
 }
 
 function main() {
 
-    const server = new grpc.Server()
-    server.addService(service.GreetServiceService, { greet: greet })
-    server.bind('127.0.0.1: 50051', grpc.ServerCredentials.createInsecure())
+    const server = new Server()
+    server.addService(GreetServiceService, { greet })
+    server.bind('127.0.0.1:50051', ServerCredentials.createInsecure())
     server.start()
 
-    console.log('Server running on 127.0.0.1: 50051')
+    console.log('Server running on 127.0.0.1:50051')
 }
 
 main()

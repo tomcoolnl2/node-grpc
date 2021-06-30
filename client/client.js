@@ -1,19 +1,19 @@
 
 const grpc = require('grpc')
-const greets = require('../server/protos/greet_pb')
-const service = require('../server/protos/greet_grpc_pb')
+const { Greeting, GreetRequest } = require('../server/protos/greet_pb')
+const { GreetServiceClient } = require('../server/protos/greet_grpc_pb')
 
 
 function main() {
     
-    const client = new service.GreetServiceClient(
+    const client = new GreetServiceClient(
         'localhost:50051',
         grpc.credentials.createInsecure()
     )
 
-    const request = new greets.GreetRequest()
+    const request = new GreetRequest()
 
-    const greeting = new greets.Greeting()
+    const greeting = new Greeting()
     greeting.setFirstName('Tom')
     greeting.setLastName('Cool')
     

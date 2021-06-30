@@ -1,7 +1,7 @@
 # Learning the gRPC concept for NodeJS MicroServices
 
-Run ```node /server``` to run a Unary service
-Run ```node /client/client``` to start a Unary service
+Run ```node /server``` to run a Unary service.<br />
+Run ```node /client/client``` to start a Unary service<br />
 Watch the log to see a name printed out.
 
 ## TODO

@@ -1,6 +1,7 @@
 
 const { Server, ServerCredentials } = require('grpc')
-const { GreetService } = require('../server/definitionLoader')
+const { GreetService, CalculatorService } = require('../server/definitionLoader')
+const { primeFactorization } = require('./primeFactorization')
 
 
 function greet(
@@ -14,13 +15,12 @@ function greetManyTimes(call) {
 
     const { request: { greeting: { first_name, last_name } } } = call
 
-    let count = 0;
+    let count = 0
     let intervalId = setInterval(() => {
     
         call.write({ result: count % 2 ? last_name : first_name })
         
-        count += 1
-        if (count > 9) {
+        if (++count > 9) {
             clearInterval(intervalId)
             call.end()
         }
@@ -28,10 +28,31 @@ function greetManyTimes(call) {
     }, 1000)
 }
 
+function calculate(call) {
+    
+    const { request: { calculation: { input } } } = call
+    const primeNumbers = primeFactorization(input)
+
+    let count = 0
+    let intervalId = setInterval(() => {
+    
+        call.write({ result: primeNumbers[count] })
+        
+        if (++count >= primeNumbers.length) {
+            clearInterval(intervalId)
+            call.end()
+        }
+
+    }, 500)
+    
+    call.write({ result: input })
+}
+
 function main() {
 
     const server = new Server()
-    server.addService(GreetService.service, { greet, greetManyTimes })
+    // server.addService(GreetService.service, { greet, greetManyTimes })
+    server.addService(CalculatorService.service, { calculate })
     server.bind('127.0.0.1:50051', ServerCredentials.createInsecure())
     server.start()
 

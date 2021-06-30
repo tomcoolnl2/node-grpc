@@ -1,9 +1,29 @@
 
 const { credentials } = require('grpc')
-const { GreetService } = require('../server/definitionLoader')
+const { GreetService, CalculatorService } = require('../server/definitionLoader')
 
-const client = new GreetService('localhost:50051', credentials.createInsecure())
 
+// const client = new GreetService('localhost:50051', credentials.createInsecure())
+const client = new CalculatorService('localhost:50051', credentials.createInsecure())
+
+function bindEvents(call) {
+
+    call.on('data', response => {
+        console.log('response', response.result)
+    })
+
+    call.on('status', status => {
+        console.log(status)
+    })
+
+    call.on('error', error => {
+        console.log(error)
+    })
+
+    call.on('end', () => {
+        console.log('streaming ended')
+    })
+}
 
 function callGreeting() {
     const request = {
@@ -34,27 +54,23 @@ function callGreetManyTimes() {
     }
 
     const call = client.greetManyTimes(request)
+    bindEvents(call)
+}
 
-    call.on('data', response => {
-        console.log('response', response.result)
-    })
+function callCalculate() {
+    
+    const request = {
+        calculation: { input: 120 }
+    }
 
-    call.on('status', status => {
-        console.log(status)
-    })
-
-    call.on('error', status => {
-        console.log(status)
-    })
-
-    call.on('end', () => {
-        console.log('streaming ended')
-    })
+    const call = client.calculate(request)
+    bindEvents(call)
 }
 
 function main() {
     // callGreeting()
-    callGreetManyTimes()
+    // callGreetManyTimes()
+    callCalculate()
 }
 
 main()

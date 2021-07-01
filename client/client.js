@@ -5,8 +5,8 @@ const { GreetService, CalculatorService } = require('../shared/definitionLoader'
 const { sleep } = require('../shared/sleep')
 
 
-// const client = new GreetService('localhost:50051', credentials.createInsecure())
-const client = new CalculatorService('localhost:50051', credentials.createInsecure())
+const client = new GreetService('localhost:50051', credentials.createInsecure())
+// const client = new CalculatorService('localhost:50051', credentials.createInsecure())
 
 function bindEvents(call) {
 
@@ -47,7 +47,39 @@ function callGreetManyTimes() {
 
     const call = client.greetManyTimes(request)
     
-    sbindEvents(call)
+    bindEvents(call)
+}
+
+async function callGreetEveryOne() {
+    const request = {
+        greeting: {
+            first_name: 'Jinglan',
+            last_name: 'Shi'
+        }
+    }
+
+    const call = client.greetEveryOne(request, (error, response) => {
+        if (!error) {
+            console.log('response', response.result)
+        }
+        else {
+            console.error(error)
+        }
+    })
+
+    bindEvents(call) 
+
+    for (let i = 1; i < 17; i += 1) {
+        call.write({ 
+            greeting: {
+                first_name: 'Jinglan',
+                last_name: 'Shi ' + i
+            }
+        })
+        await sleep(1250)
+    }
+
+    call.end()
 }
 
 function callCalculate() {
@@ -90,7 +122,8 @@ function main() {
     // callGreeting()
     // callGreetManyTimes()
     // callCalculate()
-    callComputeAverage()
+    // callComputeAverage()
+    callGreetEveryOne()
 }
 
 main()

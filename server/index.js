@@ -30,6 +30,30 @@ function greetManyTimes(call) {
     }, 1000)
 }
 
+async function greetEveryOne(call) {
+    // await sleep()
+    call.on('data', ({ greeting: { first_name, last_name } }) => {
+        console.log(first_name + ' ' + last_name)
+    })
+
+    call.on('error', console.error)
+
+    call.on('status', status => {
+        console.log('status', status)
+    })
+
+    call.on('end', () => {
+        // callback(null, { result })
+    })
+
+    for (let i = 1; i < 10; i += 1) {
+        call.write({ result: 'Tom Cool ' + i })
+        await sleep(2000)
+    }
+
+    call.end()
+}
+
 async function calculate(call) {
 
     const { request: { calculation: { input } } } = call
@@ -74,8 +98,8 @@ function computeAverage(call, callback) {
 function main() {
 
     const server = new Server()
-    // server.addService(GreetService.service, { greet, greetManyTimes })
-    server.addService(CalculatorService.service, { calculate, computeAverage })
+    server.addService(GreetService.service, { greet, greetManyTimes, greetEveryOne })
+    // server.addService(CalculatorService.service, { calculate, computeAverage })
     server.bind('127.0.0.1:50051', ServerCredentials.createInsecure())
     server.start()
 

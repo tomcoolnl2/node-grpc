@@ -4,7 +4,9 @@ package calculator;
 
 
 service CalculatorService {
+    // Unary API
     rpc Calculate (CalculatorRequest) returns (stream CalculatorResponse) {};
+    // Client Streaming API
     rpc ComputeAverage (stream ComputeAverageRequest) returns (ComputeAverageResponse) {};
 }
 

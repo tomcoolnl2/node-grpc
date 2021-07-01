@@ -5,8 +5,8 @@ const { GreetService, CalculatorService } = require('../shared/definitionLoader'
 const { sleep } = require('../shared/sleep')
 
 
-const client = new GreetService('localhost:50051', credentials.createInsecure())
-// const client = new CalculatorService('localhost:50051', credentials.createInsecure())
+// const client = new GreetService('localhost:50051', credentials.createInsecure())
+const client = new CalculatorService('localhost:50051', credentials.createInsecure())
 
 function bindEvents(call) {
 
@@ -18,6 +18,7 @@ function bindEvents(call) {
 }
 
 function callGreeting() {
+    
     const request = {
         greeting: {
             first_name: 'Tom',
@@ -93,6 +94,32 @@ function callCalculate() {
     bindEvents(call)
 }
 
+async function callFindMaximum() {
+    const c = [1, 5, 3, 6, 12, 20, 19, 33, 1, 1, 66, 123123]
+
+    const request = {
+        input: null
+    }
+
+    const call = client.findMaximum(request, (error, response) => {
+        if (!error) {
+            console.log('server response: ', response.result)
+        }
+        else {
+            console.error(error)
+        }
+    })
+
+    bindEvents(call)
+
+    for (let i = 0, n; n = c[i]; i += 1) {
+        await sleep(500)
+        call.write({ input: n })
+    }
+
+    call.end()
+}
+
 async function callComputeAverage() {
     
     const c = [63, 5, 31, 7, 98]
@@ -123,7 +150,8 @@ function main() {
     // callGreetManyTimes()
     // callCalculate()
     // callComputeAverage()
-    callGreetEveryOne()
+    // callGreetEveryOne()
+    callFindMaximum()
 }
 
 main()

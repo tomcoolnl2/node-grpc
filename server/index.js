@@ -95,11 +95,39 @@ function computeAverage(call, callback) {
     })
 }
 
+function findMaximum(call) {
+    
+    let result = null
+
+    call.on('data', ({ input }) => {
+    
+        console.log('findMaximum is retrieving: ', input)
+        console.log('findMaximum has: ', result)
+        console.log('is retrived nr bigger? : ', String(input > result))
+        console.log('-------------------')
+
+        if (input > result) {
+            result = input
+            call.write({ result })
+        }
+    })
+    
+    call.on('error', console.error)
+
+    call.on('status', status => {
+        console.log('status', status)
+    })
+
+    call.on('end', () => {
+        call.end()
+    })
+}
+
 function main() {
 
     const server = new Server()
-    server.addService(GreetService.service, { greet, greetManyTimes, greetEveryOne })
-    // server.addService(CalculatorService.service, { calculate, computeAverage })
+    // server.addService(GreetService.service, { greet, greetManyTimes, greetEveryOne })
+    server.addService(CalculatorService.service, { calculate, computeAverage, findMaximum })
     server.bind('127.0.0.1:50051', ServerCredentials.createInsecure())
     server.start()
 

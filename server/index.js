@@ -1,8 +1,9 @@
 
 const { Server, ServerCredentials } = require('grpc')
-const { GreetService, CalculatorService } = require('../server/definitionLoader')
-const { primeFactorization } = require('./primeFactorization')
-const { sleep } = require('./sleep')
+const { defaultEvents } = require('../shared/defaultEvents')
+const { GreetService, CalculatorService } = require('../shared/definitionLoader')
+const { primeFactorization } = require('../shared/primeFactorization')
+const { sleep } = require('../shared/sleep')
 
 
 function greet(
@@ -30,8 +31,9 @@ function greetManyTimes(call) {
 }
 
 async function calculate(call) {
-    
+
     const { request: { calculation: { input } } } = call
+
     await primeFactorization(input, async factor => {
         call.write({ result: factor })
         await sleep()
@@ -40,11 +42,40 @@ async function calculate(call) {
     call.end()
 }
 
+function computeAverage(call, callback) {
+
+    let c = []
+    let result = null
+    const calculateAvarage = n => {
+        c.push(n)
+        const sum = c.reduce((a, v) => a + v, 0)
+        console.log('The sum of : ', c, ' is ', sum)
+        return  sum / c.length
+    }
+
+    call.on('data', ({ input }) => {
+        console.log('computeAverage is retrieving: ', input)
+        result = calculateAvarage(input)
+        console.log('avarage: ', result)
+        console.log('-------------------')
+    })
+    
+    call.on('error', console.error)
+
+    call.on('status', status => {
+        console.log('status', status)
+    })
+
+    call.on('end', () => {
+        callback(null, { result })
+    })
+}
+
 function main() {
 
     const server = new Server()
     // server.addService(GreetService.service, { greet, greetManyTimes })
-    server.addService(CalculatorService.service, { calculate })
+    server.addService(CalculatorService.service, { calculate, computeAverage })
     server.bind('127.0.0.1:50051', ServerCredentials.createInsecure())
     server.start()
 

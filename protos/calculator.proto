@@ -5,6 +5,7 @@ package calculator;
 
 service CalculatorService {
     rpc Calculate (CalculatorRequest) returns (stream CalculatorResponse) {};
+    rpc ComputeAverage (stream ComputeAverageRequest) returns (ComputeAverageResponse) {};
 }
 
 message Calculator {
@@ -17,4 +18,12 @@ message CalculatorRequest {
 
 message CalculatorResponse {
     int32 result = 1;
+}
+
+message ComputeAverageRequest {
+    int32 input = 1;
+}
+
+message ComputeAverageResponse {
+    double result = 1;
 }

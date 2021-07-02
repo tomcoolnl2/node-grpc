@@ -1,4 +1,6 @@
 
+const fs = require('fs')
+const path = require('path')
 const { credentials } = require('grpc')
 const { defaultEvents } = require('../shared/defaultEvents')
 const { getRPCDeadline, RPC_TYPE } = require('../shared/RPCDeadline')
@@ -6,8 +8,16 @@ const { GreetService, CalculatorService } = require('../shared/definitionLoader'
 const { sleep } = require('../shared/sleep')
 
 
+// const unsafeCredentials = credentials.createInsecure()
+const sslCredentials = credentials.createSsl(
+    fs.readFileSync(path.join(__dirname, '../certs/ca.crt')),
+    fs.readFileSync(path.join(__dirname, '../certs/client.key')),
+    fs.readFileSync(path.join(__dirname, '../certs/client.crt'))
+)
+
 // const client = new GreetService('localhost:50051', credentials.createInsecure())
-const client = new CalculatorService('localhost:50051', credentials.createInsecure())
+const client = new CalculatorService('localhost:50051', sslCredentials)
+
 
 function bindEvents(call) {
 

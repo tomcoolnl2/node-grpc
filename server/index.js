@@ -1,4 +1,6 @@
 
+const fs = require('fs')
+const path = require('path')
 const { Server, ServerCredentials, status } = require('grpc')
 const { defaultEvents } = require('../shared/defaultEvents')
 const { GreetService, CalculatorService } = require('../shared/definitionLoader')
@@ -139,10 +141,20 @@ function squareRoot({ request: { input } }, callback) {
 
 function main() {
 
+    // const unsafeCredentials = ServerCredentials.createInsecure()
+    const sslCredentials = ServerCredentials.createSsl(
+        fs.readFileSync(path.join(__dirname, '../certs/ca.crt')),
+        [{
+            cert_chain: fs.readFileSync(path.join(__dirname, '../certs/server.crt')),
+            private_key: fs.readFileSync(path.join(__dirname, '../certs/server.key'))
+        }],
+        true
+    )
+
     const server = new Server()
     // server.addService(GreetService.service, { greet, greetManyTimes, greetEveryOne })
     server.addService(CalculatorService.service, { calculate, computeAverage, findMaximum, squareRoot })
-    server.bind('127.0.0.1:50051', ServerCredentials.createInsecure())
+    server.bind('127.0.0.1:50051', sslCredentials)
     server.start()
 
     console.log('Server running on 127.0.0.1:50051')

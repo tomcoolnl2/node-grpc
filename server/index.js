@@ -1,5 +1,5 @@
 
-const { Server, ServerCredentials } = require('grpc')
+const { Server, ServerCredentials, status } = require('grpc')
 const { defaultEvents } = require('../shared/defaultEvents')
 const { GreetService, CalculatorService } = require('../shared/definitionLoader')
 const { primeFactorization } = require('../shared/primeFactorization')
@@ -44,6 +44,7 @@ async function greetEveryOne(call) {
 
     call.on('end', () => {
         // callback(null, { result })
+        call.end()
     })
 
     for (let i = 1; i < 10; i += 1) {
@@ -123,11 +124,22 @@ function findMaximum(call) {
     })
 }
 
+function squareRoot({ request: { input } }, callback) {
+    console.log('squareRoot: ', input)
+    if (input >= 0) {
+        callback(null, { result: Math.sqrt(input) })
+    }
+    else return callback({
+        code: status.INVALID_ARGUMENT,
+        message: 'Not a positive number: ' + input
+    })
+}
+
 function main() {
 
     const server = new Server()
     // server.addService(GreetService.service, { greet, greetManyTimes, greetEveryOne })
-    server.addService(CalculatorService.service, { calculate, computeAverage, findMaximum })
+    server.addService(CalculatorService.service, { calculate, computeAverage, findMaximum, squareRoot })
     server.bind('127.0.0.1:50051', ServerCredentials.createInsecure())
     server.start()
 

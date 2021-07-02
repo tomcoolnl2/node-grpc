@@ -145,13 +145,31 @@ async function callComputeAverage() {
     call.end()
 }
 
+function callSquareRoot() { 
+      
+    const request = {
+        input: -1 // triggers errors when set to a negative number
+    }
+
+    client.squareRoot(request, (error, response) => {
+
+        if (!error) {
+            console.log('response', response.result)
+        }
+        else {
+            console.error(error)
+        }
+    })
+}
+
 function main() {
     // callGreeting()
     // callGreetManyTimes()
     // callCalculate()
     // callComputeAverage()
     // callGreetEveryOne()
-    callFindMaximum()
+    // callFindMaximum()
+    callSquareRoot()
 }
 
 main()

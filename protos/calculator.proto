@@ -10,6 +10,8 @@ service CalculatorService {
     rpc ComputeAverage (stream ComputeAverageRequest) returns (ComputeAverageResponse) {};
     // BiDi Streaming API
     rpc FindMaximum (stream FindMaximumRequest) returns (stream FindMaximumResponse) {};
+    // Error handling demo    
+    rpc SquareRoot (SquareRootRequest) returns (SquareRootResponse) {};
 }
 
 message Calculator {
@@ -38,4 +40,12 @@ message FindMaximumRequest {
 
 message FindMaximumResponse {
     int32 result = 1;
+}
+
+message SquareRootRequest {
+    int32 input = 1;
+}
+
+message SquareRootResponse {
+    double result = 1;
 }

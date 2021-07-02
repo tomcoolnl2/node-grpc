@@ -73,8 +73,8 @@ async function callGreetEveryOne() {
     for (let i = 1; i < 17; i += 1) {
         call.write({ 
             greeting: {
-                first_name: 'Jinglan',
-                last_name: 'Shi ' + i
+                first_name: 'Jane',
+                last_name: 'Doe ' + i
             }
         })
         await sleep(1250)

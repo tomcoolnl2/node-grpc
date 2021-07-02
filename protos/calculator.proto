@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package calculator;
-
+ 
 
 service CalculatorService {
     // Unary API
@@ -20,7 +20,7 @@ message CalculatorRequest {
     Calculator calculation = 1;
 }
 
-message CalculatorResponse {
+message CalculatorResponse { 
     int32 result = 1;
 }
 

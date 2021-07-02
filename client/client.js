@@ -1,6 +1,7 @@
 
 const { credentials } = require('grpc')
 const { defaultEvents } = require('../shared/defaultEvents')
+const { getRPCDeadline, RPC_TYPE } = require('../shared/RPCDeadline')
 const { GreetService, CalculatorService } = require('../shared/definitionLoader')
 const { sleep } = require('../shared/sleep')
 
@@ -146,12 +147,14 @@ async function callComputeAverage() {
 }
 
 function callSquareRoot() { 
-      
+
+    const deadline = getRPCDeadline(1)
+
     const request = {
-        input: -1 // triggers errors when set to a negative number
+        input: 10 // triggers errors when set to a negative number
     }
 
-    client.squareRoot(request, (error, response) => {
+    client.squareRoot(request, { deadline }, (error, response) => {
 
         if (!error) {
             console.log('response', response.result)

@@ -125,7 +125,9 @@ function findMaximum(call) {
 }
 
 function squareRoot({ request: { input } }, callback) {
+    
     console.log('squareRoot: ', input)
+    
     if (input >= 0) {
         callback(null, { result: Math.sqrt(input) })
     }

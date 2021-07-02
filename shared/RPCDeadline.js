@@ -17,10 +17,10 @@ function getRPCDeadline(rpcType) {
     
     switch(rpcType) {
         case RPC_TYPE.SHORT:
-            t = 1000
+            t = RPC_DEADLINE.SHORT
             break
         case 2:
-            t = 7000
+            t = RPC_DEADLINE.LONG
             break
         default:
             t = RPC_DEADLINE.MEDIUM
